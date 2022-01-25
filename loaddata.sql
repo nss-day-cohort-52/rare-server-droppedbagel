@@ -101,3 +101,4 @@ INSERT INTO Tags ('label') VALUES ('Python');
 INSERT INTO Tags ('label') VALUES ('SQL');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 
+INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (1, 1, 'Science is pretty cool.');
