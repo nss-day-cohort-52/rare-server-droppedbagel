@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from views.posts import create_post, delete_post, get_all_posts, get_single_post, update_post
 
 from views.user import create_user, login_user
 from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag)
@@ -58,7 +59,11 @@ class HandleRequests(BaseHTTPRequestHandler):
         
         if len(parsed) == 2:
             (resource, id) = parsed
-            
+            if resource == "posts":
+                if id is not None: 
+                    response = get_single_post(id)
+                else: 
+                    response = get_all_posts()
             if resource == "tags":
                 if id is None:
                     response = get_all_tags()
@@ -80,13 +85,16 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == "posts":
+            response = create_post(post_body)
         if resource == "tags":
             response = create_tag(post_body)
 
         self.wfile.write(response.encode())
+        
+        
 
     def do_PUT(self):
-        """Handles PUT requests to the server"""
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
@@ -94,25 +102,32 @@ class HandleRequests(BaseHTTPRequestHandler):
         (resource, id) = self.parse_url()
         
         success = False
+        
+        if resource == "posts":
+            success = update_post(id, post_body)
         if resource == "tags":
             success = update_tag(id, post_body)
-        
+            
         if success:
             self._set_headers(204)
-        else:
+        else: 
             self._set_headers(404)
         
-        self.wfile.write("".encode())
+        self.wfile.write("".encode()) 
+
+
 
     def do_DELETE(self):
-        """Handle DELETE Requests"""
         self._set_headers(204)
+        
         (resource, id) = self.parse_url()
+        
+        if resource == "posts":
+            delete_post(id)
         if resource == "tags":
-            delete_tag(id)
-            
+            delete_tag(id) 
+        
         self.wfile.write("".encode())
-
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
