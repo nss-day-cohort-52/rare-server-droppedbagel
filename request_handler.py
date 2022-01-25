@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 from views.user import create_user, login_user
+from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -51,7 +52,20 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """Handle Get requests to the server"""
-        pass
+        self._set_headers(200)
+        response = {}
+        parsed = self.parse_url()
+        
+        if len(parsed) == 2:
+            (resource, id) = parsed
+            
+            if resource == "tags":
+                if id is None:
+                    response = get_all_tags()
+                else:
+                    response = get_single_tag(id)
+        
+        self.wfile.write(response.encode())
 
 
     def do_POST(self):
@@ -66,16 +80,38 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == "tags":
+            response = create_tag(post_body)
 
         self.wfile.write(response.encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
-        pass
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+        
+        (resource, id) = self.parse_url()
+        
+        success = False
+        if resource == "tags":
+            success = update_tag(id, post_body)
+        
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+        
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
-        pass
+        self._set_headers(204)
+        (resource, id) = self.parse_url()
+        if resource == "tags":
+            delete_tag(id)
+            
+        self.wfile.write("".encode())
 
 
 def main():
