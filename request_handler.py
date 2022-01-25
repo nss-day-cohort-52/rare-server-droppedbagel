@@ -1,11 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from views.user import create_user, login_user, get_all_users, get_single_user
 from views.category_requests import create_category, delete_category, edit_category
 from views.user import create_user, login_user
 from views import get_all_categories
 from views.posts import create_post, delete_post, get_all_posts, get_single_post, update_post
 from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag)
-
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -56,6 +56,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_GET(self):
         """Handle Get requests to the server"""
         self._set_headers(200)
+
         response = {}
         parsed = self.parse_url()
         if len(parsed) == 2:
@@ -75,9 +76,13 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = get_all_tags()
                 else:
                     response = get_single_tag(id)
-        
+                    
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
         self.wfile.write(response.encode())
-
 
 
     def do_POST(self):
