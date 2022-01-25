@@ -33,3 +33,26 @@ def create_category(new_cat):
         id = db_cursor.lastrowid
         new_cat['id'] = id
     return json.dumps(new_cat)
+
+def delete_category(id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        DELETE FROM Categories
+        WHERE id = ?
+        """, (id, ))
+
+def edit_category(id, updated_cat):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        UPDATE Categories
+            SET
+                label = ?
+        WHERE id = ?
+        """, (updated_cat['label'], id, ))
+        rows_affected = db_cursor.rowcount
+    if rows_affected == 0:
+        return False
+    else:
+        return True

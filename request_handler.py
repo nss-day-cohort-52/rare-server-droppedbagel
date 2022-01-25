@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from views.category_requests import create_category
+from views.category_requests import create_category, delete_category, edit_category
 
 from views.user import create_user, login_user
 from views import get_all_categories
@@ -87,10 +87,26 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = json.loads(self.rfile.read(content_len))
+        (resource, id) = self.parse_url()
+        success = False
+        if resource == "categories":
+            success = edit_category(id, post_body)
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+        self.wfile.write("".encode())
         pass
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
+        self._set_headers(204)
+        (resource, id) = self.parse_url()
+        if resource == "categories":
+            delete_category(id)
+        self.wfile.write("".encode())
         pass
 
 
