@@ -1,7 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from views.category_requests import create_category
 
 from views.user import create_user, login_user
+from views import get_all_categories
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -51,6 +53,18 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """Handle Get requests to the server"""
+        self._set_headers(200)
+        response = {}
+        parsed = self.parse_url()
+        if len(parsed) == 2:
+            ( resource, id ) = parsed
+            if resource == "categories":
+                if id is not None:
+                    response = f"{get_single_category(id)}"
+                else:
+                    response = f"{get_all_categories()}"
+
+        self.wfile.write(response.encode())
         pass
 
 
@@ -66,6 +80,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == 'categories':
+            response = create_category(post_body)
 
         self.wfile.write(response.encode())
 
