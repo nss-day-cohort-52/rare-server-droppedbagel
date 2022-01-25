@@ -3,6 +3,7 @@ import json
 from views.posts import create_post, delete_post, get_all_posts, get_single_post, update_post
 
 from views.user import create_user, login_user
+from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -51,9 +52,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        """Handle Get requests to the server"""
         self._set_headers(200)
         response = {}
-        
         parsed = self.parse_url()
         
         if len(parsed) == 2:
@@ -63,7 +64,12 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = get_single_post(id)
                 else: 
                     response = get_all_posts()
-                    
+            if resource == "tags":
+                if id is None:
+                    response = get_all_tags()
+                else:
+                    response = get_single_tag(id)
+        
         self.wfile.write(response.encode())
 
 
@@ -81,6 +87,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = create_user(post_body)
         if resource == "posts":
             response = create_post(post_body)
+        if resource == "tags":
+            response = create_tag(post_body)
 
         self.wfile.write(response.encode())
         
@@ -97,6 +105,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         
         if resource == "posts":
             success = update_post(id, post_body)
+        if resource == "tags":
+            success = update_tag(id, post_body)
             
         if success:
             self._set_headers(204)
@@ -105,6 +115,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         
         self.wfile.write("".encode()) 
 
+
+
     def do_DELETE(self):
         self._set_headers(204)
         
@@ -112,7 +124,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         
         if resource == "posts":
             delete_post(id)
-
+        if resource == "tags":
+            delete_tag(id) 
+        
         self.wfile.write("".encode())
 
 def main():

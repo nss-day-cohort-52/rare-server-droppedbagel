@@ -85,6 +85,15 @@ CREATE TABLE "Categories" (
 );
 
 INSERT INTO Categories ('label') VALUES ('News');
-INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 INSERT INTO Posts ("user_id", "category_id", "title", "publication_date", "image_url", "content", "approved") VALUES (1, 1, "works?", 01102022, "google.com", "ordered?", 1)
+
+INSERT INTO Tags ('label') VALUES ('Python');
+
+INSERT INTO PostTags ('post_id', 'tag_id') VALUES (4, 1);
+INSERT INTO PostTags ('post_id', 'tag_id') VALUES (1, 5);
+
+INSERT INTO Tags ('label') VALUES ('Python');
+INSERT INTO Tags ('label') VALUES ('SQL');
+INSERT INTO Tags ('label') VALUES ('JavaScript');
+

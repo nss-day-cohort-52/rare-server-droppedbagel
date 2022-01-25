@@ -1,7 +1,7 @@
 import sqlite3
 import json
 
-from models.post import Post
+from models import Post
 
 def get_all_posts():
     with sqlite3.connect("./db.sqlite3") as conn:
