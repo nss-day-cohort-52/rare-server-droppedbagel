@@ -1,6 +1,7 @@
 import sqlite3
 import json
 from datetime import datetime
+from models import User
 
 def login_user(user):
     """Checks for the user in the database
@@ -69,3 +70,53 @@ def create_user(user):
             'token': id,
             'valid': True
         })
+
+def get_all_users():
+    """Returns a list of all users"""
+
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT id, username, first_name, last_name, email, bio, profile_image_url, created_on
+        FROM Users
+        ORDER BY username ASC
+        """)
+
+        users = []
+
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+
+            user = User(row['id'], row['username'], row['first_name'], row['last_name'], row['email'], row['bio'], row['profile_image_url'],
+                        row['created_on'])
+
+              
+            users.append(user.__dict__)
+
+    # Use `json` package to properly serialize list as JSON
+    return json.dumps(users)
+
+
+def get_single_user(id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT
+            id, username, first_name, last_name, email, bio, profile_image_url, created_on
+        FROM Users
+        WHERE id = ?
+        """, (id, ))
+
+        # Load the single result into memory
+        data = db_cursor.fetchone()
+
+        # Create an animal instance from the current row
+        user = User(data['id'], data['username'], data['first_name'], data['last_name'], data['email'], data['bio'], data['profile_image_url'],
+                        data['created_on'])
+
+    return json.dumps(user.__dict__)

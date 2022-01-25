@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
-from views.user import create_user, login_user
+from views.user import create_user, login_user, get_all_users, get_single_user
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -51,7 +51,28 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """Handle Get requests to the server"""
-        pass
+        self._set_headers(200)
+
+        response = {}
+
+        # Parse URL and store entire tuple in a variable
+        parsed = self.parse_url()
+
+        # Response from parse_url() is a tuple with 2
+        # items in it, which means the request was for
+        # `/animals` or `/animals/2`
+        if len(parsed) == 2:
+            ( resource, id ) = parsed
+
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
+            
+       
+
+        self.wfile.write(response.encode())
 
 
     def do_POST(self):
