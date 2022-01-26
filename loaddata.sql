@@ -102,3 +102,12 @@ INSERT INTO Tags ('label') VALUES ('SQL');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 
 INSERT INTO Comments ('post_id', 'author_id', 'content') VALUES (1, 1, 'Science is pretty cool.');
+SELECT
+  ep.id,
+  ep.post_id,
+  ep.tag_id,
+  t.id,
+  t.label
+FROM PostTags ep
+Left Join Tags t
+ON t.id = ep.tag_id   
