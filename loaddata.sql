@@ -94,8 +94,8 @@ INSERT INTO Posts ("user_id", "category_id", "title", "publication_date", "image
 
 INSERT INTO Tags ('label') VALUES ('Python');
 
-INSERT INTO PostTags ('post_id', 'tag_id') VALUES (4, 1);
-INSERT INTO PostTags ('post_id', 'tag_id') VALUES (1, 5);
+INSERT INTO PostTags ('post_id', 'tag_id') VALUES (2, 7);
+INSERT INTO PostTags ('post_id', 'tag_id') VALUES (2, 16);
 
 INSERT INTO Tags ('label') VALUES ('Python');
 INSERT INTO Tags ('label') VALUES ('SQL');
