@@ -3,11 +3,11 @@ import json
 from views.user import create_user, login_user, get_all_users, get_single_user
 from views.category_requests import create_category, delete_category, edit_category
 from views.user import create_user, login_user
-from views import get_all_categories
+from views import get_all_categories, create_subscription
 from views.posts import create_post, delete_post, get_all_posts, get_single_post, update_post
 from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag,
-                   get_all_comments, get_single_comment, create_comment, delete_comment, 
-                   update_comment, get_all_comments_by_post)
+                   get_all_comments_by_post, get_all_comments, get_single_comment, create_comment, 
+                   delete_comment, update_comment)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -86,16 +86,15 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_all_users()}"
             if resource == "comments":
                 if id is not None:
-                    response = f"{get_single_comment(id)}"
+                    response = get_single_comment(id)
                 else:
-                    response = f"{get_all_comments()}"
-
+                    response = get_all_comments()
+        
         elif len(parsed) == 3:
             (resource, key, value) = parsed
-            if key == "post_id" and resource == "comments":
+            if resource == "comments" and key == "post_id":
                 response = get_all_comments_by_post(value)
-            
-
+        
         self.wfile.write(response.encode())
 
 
@@ -121,6 +120,13 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "comments":
             response = create_comment(post_body)
 
+        if resource == "subscriptions":
+            response = create_subscription(post_body)
+
+
+        if resource == "comments":
+            response = create_comment(post_body)
+
 
         self.wfile.write(response.encode())
         
@@ -139,8 +145,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "tags":
             success = update_tag(id, post_body)
         if resource == "comments":
-            success = update_comment(id, post_body)        
-        
+            success = update_comment(id, post_body)
         if success:
             self._set_headers(204)
         else:
@@ -157,7 +162,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "posts":
             delete_post(id)
         if resource == "tags":
-            delete_tag(id) 
+            delete_tag(id)
         if resource == "comments":
             delete_comment(id) 
         self.wfile.write("".encode())
