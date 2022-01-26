@@ -3,7 +3,7 @@ import json
 from views.user import create_user, login_user, get_all_users, get_single_user
 from views.category_requests import create_category, delete_category, edit_category
 from views.user import create_user, login_user
-from views import get_all_categories
+from views import get_all_categories, create_subscription
 from views.posts import create_post, delete_post, get_all_posts, get_single_post, update_post
 from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag)
 
@@ -104,6 +104,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = create_post(post_body)
         if resource == "tags":
             response = create_tag(post_body)
+        if resource == "subscriptions":
+            response = create_subscription(post_body)
 
 
         self.wfile.write(response.encode())
