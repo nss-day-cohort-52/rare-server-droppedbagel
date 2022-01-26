@@ -1,7 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+
+from views.subscription_requests import delete_subscription, get_subscriptions, get_users_subs
+
 from views.posttag_request import create_entrytag
 from views.subscription_requests import get_subscriptions, get_users_subs
+
 from views.user import create_user, login_user, get_all_users, get_single_user
 from views.category_requests import create_category, delete_category, edit_category
 from views.user import create_user, login_user
@@ -172,6 +176,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "comments":
             delete_comment(id) 
         self.wfile.write("".encode())
+        if resource == "subscriptions":
+            delete_subscription(id)
         pass
 
         

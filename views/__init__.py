@@ -9,7 +9,7 @@ from .subscription_requests import create_subscription
 
 from .comment_request import (get_all_comments_by_post, get_all_comments, get_single_comment, create_comment, delete_comment, update_comment)
 
-from .subscription_requests import create_subscription, get_subscriptions, get_users_subs
+from .subscription_requests import create_subscription, delete_subscription, get_subscriptions, get_users_subs, delete_subscription
 
 
 from .comment_request import (get_all_comments_by_post, get_all_comments, get_single_comment, create_comment, delete_comment, update_comment)

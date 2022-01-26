@@ -55,3 +55,11 @@ def get_users_subs(id):
             subscription = Subscription(row['id'], row['follower_id'], row['author_id'], row['created_on'])
             subscriptions.append(subscription.__dict__) #python __ is dunder
     return json.dumps(subscriptions)
+
+def delete_subscription(id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        DELETE FROM Subscriptions
+        WHERE id = ?
+        """, (id, ))
