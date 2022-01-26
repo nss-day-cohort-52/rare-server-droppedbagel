@@ -81,7 +81,7 @@ def get_all_users():
         db_cursor.execute("""
         SELECT id, username, first_name, last_name, email, bio, profile_image_url, created_on
         FROM Users
-        ORDER BY username ASC
+        ORDER BY username COLLATE NOCASE ASC
         """)
 
         users = []

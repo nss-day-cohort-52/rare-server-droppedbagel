@@ -12,7 +12,7 @@ def get_all_categories():
             c.id,
             c.label
         FROM Categories c
-        ORDER BY label ASC
+        ORDER BY c.label COLLATE NOCASE ASC
         """)
         categories = []
         dataset = db_cursor.fetchall()
