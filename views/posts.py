@@ -106,6 +106,27 @@ def get_single_post(id):
         post = Post(dataset["id"], dataset["user_id"], dataset["category_id"], dataset["title"], dataset["publication_date"], dataset["image_url"], dataset["content"], dataset["approved"])
         post.user = User(dataset["user_id"], dataset["username"], dataset["first_name"], dataset["last_name"]).__dict__
         post.category = Category(dataset["category_id"], dataset["label"]).__dict__
+        
+        db_cursor.execute("""
+            SELECT
+                ep.id,
+                ep.post_id,
+                ep.tag_id,
+                t.id,
+                t.label
+            FROM PostTags ep
+            Left Join Tags t
+            ON t.id = ep.tag_id
+            WHERE post_id = ?             
+            """, (dataset["id"],))
+            
+        tags = []
+        database = db_cursor.fetchall()
+            
+        for row in database:
+            tags.append(row["tag_id"])
+                
+        post.tags = tags
             
     return json.dumps(post.__dict__) 
 
@@ -163,6 +184,17 @@ def update_post(id, updated_post):
                 approved = ?
         WHERE id = ?   
         """, (updated_post["user_id"], updated_post["category_id"], updated_post["title"], updated_post["publication_date"], updated_post["image_url"], updated_post["content"], updated_post["approved"], id))
+
+        if "tags" in updated_post:
+            db_cursor.execute("""
+            DELETE FROM PostTags
+            WHERE post_id = ?
+            """, (id, ))
+            for tag_id in updated_post["tags"]:
+                db_cursor.execute("""
+                INSERT INTO PostTags (post_id, tag_id)
+                VALUES (?, ?)
+                """, (updated_post["id"], tag_id))
         
         rows_affected = db_cursor.rowcount
         
