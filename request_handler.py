@@ -127,6 +127,13 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "comments":
             response = create_comment(post_body)
 
+        if resource == "subscriptions":
+            response = create_subscription(post_body)
+
+
+        if resource == "comments":
+            response = create_comment(post_body)
+
 
         self.wfile.write(response.encode())
         
