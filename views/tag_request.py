@@ -12,7 +12,7 @@ def get_all_tags():
             t.id,
             t.label
         FROM Tags t
-        ORDER BY label ASC
+        ORDER BY t.label COLLATE NOCASE ASC
         """)
         
         tags = []
