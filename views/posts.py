@@ -1,8 +1,10 @@
+from pdb import post_mortem
 import sqlite3
 import json
 
 from models import Post
 from models.category import Category
+from models.posttags import PostTag
 from models.user_model import User
 
 def get_all_posts():
@@ -43,6 +45,26 @@ def get_all_posts():
             user = User(row["user_id"], row["username"], row["first_name"], row["last_name"])
             category = Category(row["category_id"], row["label"])
             
+            db_cursor.execute("""
+            SELECT
+                ep.id,
+                ep.post_id,
+                ep.tag_id,
+                t.id,
+                t.label
+            FROM PostTags ep
+            Left Join Tags t
+            ON t.id = ep.tag_id
+            WHERE post_id = ?             
+            """, (row["id"],))
+            
+            tags = []
+            database = db_cursor.fetchall()
+            
+            for row in database:
+                tags.append(row["label"])
+                
+            post.tags = tags
             post.category = category.__dict__
             post.user = user.__dict__
             posts.append(post.__dict__)

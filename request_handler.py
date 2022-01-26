@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from views.posttag_request import create_entrytag
 from views.user import create_user, login_user, get_all_users, get_single_user
 from views.category_requests import create_category, delete_category, edit_category
 from views.user import create_user, login_user
@@ -97,13 +98,14 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
-
         if resource == 'categories':
             response = create_category(post_body)
         if resource == "posts":
             response = create_post(post_body)
         if resource == "tags":
             response = create_tag(post_body)
+        if resource == "posttags":
+            response = create_entrytag(post_body)
 
 
         self.wfile.write(response.encode())
