@@ -13,7 +13,10 @@ from views import get_all_categories, create_subscription
 from views.posts import create_post, delete_post, get_all_posts, get_single_post, update_post
 from views import (get_all_tags, get_single_tag, create_tag, delete_tag, update_tag,
                    get_all_comments_by_post, get_all_comments, get_single_comment, create_comment, 
-                   delete_comment, update_comment)
+                   delete_comment, update_comment, get_all_reactions, get_single_reaction, 
+                   create_reaction, delete_reaction, update_reaction, get_all_post_reactions, 
+                   get_single_post_reaction, create_post_reaction, delete_post_reaction, 
+                   update_post_reaction)
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -100,7 +103,16 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_subscription(id)}"
                 else:
                     response = f"{get_subscriptions()}"
-                    
+            if resource == "reactions":
+                if id is not None:
+                    response = get_single_reaction(id)
+                else:
+                    response = get_all_reactions()
+            if resource == "postreactions":
+                if id is not None:
+                    response = get_single_post_reaction(id)
+                else:
+                    response = get_all_post_reactions()                
         
         elif len(parsed) == 3:
             (resource, key, value) = parsed
@@ -136,7 +148,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = create_subscription(post_body)
         if resource == "posttags":
             response = create_entrytag(post_body)
-
+        if resource == "reactions":
+            response = create_reaction(post_body)
+        if resource == "postreactions":
+            response = create_post_reaction(post_body)
 
         self.wfile.write(response.encode())
         
@@ -156,6 +171,11 @@ class HandleRequests(BaseHTTPRequestHandler):
             success = update_tag(id, post_body)
         if resource == "comments":
             success = update_comment(id, post_body)
+        if resource == "reactions":
+            success = update_reaction(id, post_body)
+        if resource == "postreactions":
+            success = update_post_reaction(id, post_body)
+
         if success:
             self._set_headers(204)
         else:
@@ -175,6 +195,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_tag(id)
         if resource == "comments":
             delete_comment(id) 
+        if resource == "reactions":
+            delete_reaction(id)
+        if resource == "postreactions":
+            delete_post_reaction(id) 
         self.wfile.write("".encode())
         if resource == "subscriptions":
             delete_subscription(id)
