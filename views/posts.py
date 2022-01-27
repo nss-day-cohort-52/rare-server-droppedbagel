@@ -150,6 +150,11 @@ def delete_post(id):
         WHERE post_id = ?                  
         """, (id, ))
         
+        db_cursor.execute("""
+        DELETE FROM PostReactions
+        WHERE post_id = ?
+        """, (id, ))
+        
 def create_post(new_post):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -201,4 +206,4 @@ def update_post(id, updated_post):
     if rows_affected == 0:
         return False
     else: 
-        return True 
+        return True
