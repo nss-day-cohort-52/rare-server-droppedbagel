@@ -122,5 +122,18 @@ CREATE TABLE "PostReactions" (
   FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`)
 );
 
-INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,1);
-INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,2);
+INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,14);
+INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,13);
+
+
+            SELECT
+                pr.id,
+                pr.user_id,
+                pr.reaction_id,
+                pr.post_id,
+                r.label,
+                r.image_url
+            FROM PostReactions pr
+            Left Join Reactions r
+            ON pr.reaction_id = r.id
+            WHERE pr.post_id =1
