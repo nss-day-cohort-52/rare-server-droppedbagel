@@ -111,3 +111,16 @@ SELECT
 FROM PostTags ep
 Left Join Tags t
 ON t.id = ep.tag_id   
+
+CREATE TABLE "PostReactions" (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "user_id" INTEGER,
+  "reaction_id" INTEGER,
+  "post_id" INTEGER,
+  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`),
+  FOREIGN KEY(`reaction_id`) REFERENCES `Reactions`(`id`),
+  FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`)
+);
+
+INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,1);
+INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,2);
