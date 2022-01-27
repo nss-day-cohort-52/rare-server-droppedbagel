@@ -11,4 +11,5 @@ class Post():
         self.user = None
         self.category = None
         self.tags = None
+        self.post_reactions = None
         

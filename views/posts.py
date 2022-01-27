@@ -64,6 +64,28 @@ def get_all_posts():
             for row in database:
                 tags.append(row["label"])
                 
+            db_cursor.execute("""
+            SELECT
+                pr.id,
+                pr.user_id,
+                pr.reaction_id,
+                pr.post_id,
+                r.id,
+                r.label,
+                r.image_url
+            FROM PostReactions pr
+            Left Join Reactions r
+            ON pr.reaction_id = r.id
+            WHERE post_id = ?             
+            """, (post.id,))
+            
+            postreactions = []
+            reactiondata = db_cursor.fetchall()
+        
+            for row in reactiondata:
+                postreactions.append(row["reaction_id"])
+            
+            post.post_reactions = postreactions
             post.tags = tags
             post.category = category.__dict__
             post.user = user.__dict__
@@ -125,7 +147,29 @@ def get_single_post(id):
             
         for row in database:
             tags.append(row["tag_id"])
-                
+        
+            db_cursor.execute("""
+            SELECT
+                pr.id,
+                pr.user_id,
+                pr.reaction_id,
+                pr.post_id,
+                r.id,
+                r.label,
+                r.image_url
+            FROM PostReactions pr
+            Left Join Reactions r
+            ON pr.reaction_id = r.id
+            WHERE post_id = ?             
+            """, (post.id,))
+            
+            postreactions = []
+            reactiondata = db_cursor.fetchall()
+        
+            for row in reactiondata:
+                postreactions.append(row["reaction_id"])
+            
+        post.post_reactions = postreactions       
         post.tags = tags
             
     return json.dumps(post.__dict__) 
