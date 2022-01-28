@@ -87,7 +87,7 @@ CREATE TABLE "Categories" (
 INSERT INTO Categories ('label') VALUES ('News');
 
 INSERT INTO Tags ('label') VALUES ('JavaScript');
-INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
+UPDATE Reactions SET image_url = "😄 " WHERE label = "happy";
 
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 INSERT INTO Posts ("user_id", "category_id", "title", "publication_date", "image_url", "content", "approved") VALUES (1, 1, "works?", 01102022, "google.com", "ordered?", 1)
@@ -137,3 +137,10 @@ INSERT INTO PostReactions ('user_id', 'reaction_id', 'post_id') VALUES (1,1,13);
             Left Join Reactions r
             ON pr.reaction_id = r.id
             WHERE pr.post_id =1
+
+
+INSERT INTO Reactions ('label', 'image_url') VALUES ('laugh', '😂');
+INSERT INTO Reactions ('label', 'image_url') VALUES ('love', '😍');
+INSERT INTO Reactions ('label', 'image_url') VALUES ('angry', '🤬');
+INSERT INTO Reactions ('label', 'image_url') VALUES ('wow', '🤯');
+INSERT INTO Reactions ('label', 'image_url') VALUES ('cry', '😥');
